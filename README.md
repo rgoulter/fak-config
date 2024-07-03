@@ -1,6 +1,16 @@
 # fak-config
 
-[FAK](https://github.com/semickolon/fak) user configuration repository.
+[FAK user configuration](https://github.com/semickolon/fak-config) repository.
+
+[FAK](https://github.com/semickolon/fak) is a keyboard firmware for the CH55x series of microcontrollers.
+
+CH55x microcontrollers are both cheap, and very simple to design keyboards for.
+
+FAK uses the [Nickel](https://nickel-lang.org/) configuration language (a
+"JSON + functions + types" language) for defining keyboard and keymap definitions.
+Nickel is a pleasant and expressive language to use for this.
+
+This repository includes definitions for my keyboards and keymaps.
 
 ## Overview
 
