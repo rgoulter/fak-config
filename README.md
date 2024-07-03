@@ -1,54 +1,51 @@
 # fak-config
 
-FAK user configuration repository.
+[FAK](https://github.com/semickolon/fak) user configuration repository.
 
-## Features
+## Overview
 
-- QMK-like folder structure with `keyboards` and `keymaps`
-- All-in-one `fak` command for flashing, compiling, etc.
-- The latest release is automatically updated every push with ready-to-flash firmware for all your keyboards and keymaps
-- Ready-to-use dev container for easy remote development via GitHub Codespaces or VS Code
-- Globally shared Nickel files in `shared/lib` for code reuse across keyboards and keymaps
+- `shared/lib` - Nickel code which may be shared across keymaps/keyboard Nickel code.
+
+  - [layouts.ncl](shared/lib/layouts.ncl) - helper code for various Alphabetical layouts. (QWERTY, Dvorak, etc.).
+
+  - [keymaps/split_3x5_3/](shared/lib/keymaps/split_3x5_3/) - keymaps for a "split 3x5 + 3" layout.
+
+    - [rgoulter](shared/lib/keymaps/split_3x5_3/rgoulter.ncl) - my split 3x5 + 3 keymap, a miryoku-inspired keymap.
+
+  - `keyboards/` - FAK keyboard definitions.
+
+    - [ch552-36](keyboards/ch552-36)
+
+    - [ch552-36-rhs](keyboards/ch552-36-rhs) - definition for using RHS-only as central. Useful for checking the RHS is soldered correctly.
+
+    - [ch552-44](keyboards/ch552-44)
+
+      - [layouts](keyboards/ch552-44/layouts.ncl) - supports implementing keymaps in other layouts. (e.g. using split_3x5_3 on the ch552-44).
+
+    - [ch552-48](keyboards/ch552-48)
+
+      - [layouts](keyboards/ch552-48/layouts.ncl) - supports implementing keymaps in other layouts. (e.g. using split_3x5_3 on the ch552-44).
+
+## Keyboards
+
+Design files for PCBs, plates, 3DP/CNC from rgoulter's [Keyboard Labs](https://github.com/rgoulter/keyboard-labs).
+
+| Designation  | Summary/Keywords                                                                       | Image                                                                                                                                                 |
+|--------------|----------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [CH552-44](#ch552-44-low-budget-hand-solderable-pcb-in-bm40jj40-form-factor) | 44-key ortholinear, MX, BM40/JJ40-compatible, no frills        | ![](https://raw.githubusercontent.com/rgoulter/keyboard-labs/master/docs/images/keyboards/ch552-44/ch552_44-sandwich-top.JPG) |
+| [CH552-48](#ch552-48-low-budget-pcba-in-bm40jj40-form-factor) | 48-key ortholinear (4x12), MX, BM40/JJ40-compatible, no frills        | ![](https://raw.githubusercontent.com/rgoulter/keyboard-labs/master/docs/images/keyboards/ch552-48/ch552-48-top.JPG) |
+| [CH552-48-LPR](#ch552-48-lpr-low-budget-pcba-with-low-profile-redragon-switches) | 48-key ortholinear (4x12), low profile redragon, no frills        | ![](https://raw.githubusercontent.com/rgoulter/keyboard-labs/master/docs/images/keyboards/ch552-48-lpr/ch552_48-lpr-sandwich-top.JPG) |
+| [CH552-36](#ch552-36-low-budget-36-key-split-keyboard-with-smt-components) | 36 key (2x3x5+3), split, column-staggered, MX, sub-100x100, no frills        | ![](https://raw.githubusercontent.com/rgoulter/keyboard-labs/master/docs/images/keyboards/ch552-36/top-with-coiled-cable.JPG) |
 
 ## Setup
 
-### GitHub Codespace
+Refer to [upstream documentation for setting up fak-config](https://github.com/semickolon/fak-config?tab=readme-ov-file#setup).
 
-The quickest and easiest way to get started is using [GitHub Codespaces](https://github.com/features/codespaces). You don't have to go through the trouble of setting up the development environment. Everything is remote, comes preloaded, and it just works.
+### Using Nix
 
-1. Fork this repo
-1. Create a new codespace
-1. Wait for the environment to be loaded in the terminal until you can enter commands
+If you have [Nix](https://nixos.org/) [installed on your system](https://github.com/DeterminateSystems/nix-installer), a Nix flake is provided.
 
-The only thing that won't work from a remote setup is, of course, flashing. You'll have to do that locally with [`wchisp`](https://github.com/ch32-rs/wchisp/releases/tag/nightly). Thankfully, `wchisp` provides prebuilt binaries so getting that set up on your local machine is very easy.
-
-1. In your codespace, `fak compile -kb [keyboard] -km [keymap]`. It will print the path(s) where it put the firmware.
-1. Download the `.ihx` file(s) located in the printed path(s).
-1. In your local machine, `wchisp flash [keyboard].[keymap].central.ihx`.
-1. And then if you have a split, `wchisp flash [keyboard].[keymap].peripheral.ihx`.
-
-Alternatively, you can push your changes, wait a bit, then you will find all ready-to-flash `.ihx` files in the latest release. From there, download the ones you need, then flash with `wchisp`.
-
-If, for whatever reason, you're getting `fak: command not found`, enter `nix develop` then you should be back up.
-
-### Nix
-
-If you have Nix installed on your system, a Nix flake is provided.
-
-1. Fork and clone this repo
-1. `nix develop` (or if you have `direnv`, just `direnv allow`)
-
-### Manual setup
-
-Requirements:
-- [`sdcc` 4.2.0](https://sourceforge.net/projects/sdcc/files)
-- [`nickel` 1.5.0](https://github.com/tweag/nickel/releases/tag/1.5.0)
-- [`python` 3.11.6](https://www.python.org/downloads)
-- [`meson` 1.2.3](https://mesonbuild.com/)
-- [`ninja` 1.11.1](https://github.com/ninja-build/ninja/releases/tag/v1.11.1)
-- [`wchisp`](https://github.com/ch32-rs/wchisp/releases/tag/nightly)
-
-With manual setup, the `fak` command isn't included. Use `python fak.py` in place of `fak` (e.g., `fak clean` becomes `python fak.py clean`). Alternatively, you may make a shell alias for `fak` if you wish.
+With [direnv](https://direnv.net/), allow the `.envrc` using `direnv allow`.
 
 ## Commands
 
@@ -60,26 +57,3 @@ If something's off, wrong, or not working, cleaning your build files might help 
 
 To compile every keyboard with its every keymap, enter `fak compile_all`. Whenever you push, this is what GitHub Actions actually does behind the scenes to update the latest release with all ready-to-flash `.ihx` files.
 
-## Included Nickel paths
-
-All Nickel files are evaluated with two include paths:
-- `ncl` directory in [`fak`](https://github.com/semickolon/fak). This makes `import "fak/somefile.ncl"` possible.
-- `shared` directory in this repo. This makes `import "lib/somefile.ncl"` possible.
-
-We do this so you don't have to do something like `import ../../../subprojects/fak/ncl/fak/somefile.ncl`. Yeah. Horrible.
-
-## Migrating from FAK forks
-
-If you're one of the OGs who use FAK before user config repos existed and you want to migrate:
-
-1. Fork and clone this repo.
-1. Copy over your keyboards and keymaps in `keyboards` while respecting the file structure.
-1. Replace all those (horrible) relative `fak` imports with `import "fak/somefile.ncl"`.
-
-## Switching versions
-
-1. (Optional) To use a different FAK repo, like your own fork, change the `url` in `subprojects/fak.wrap`.
-1. To use a different version, change the `revision` in `subprojects/fak.wrap`. This can be a commit hash (recommended) or a tag.
-1. `fak update`.
-
-⚠️ This affects all your keyboards and keymaps, so if there's a breaking change in the version and/or repo you're switching to, you'll have to fix that in **all** your Nickel files.
